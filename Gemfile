@@ -12,7 +12,7 @@ gem 'therubyracer',  platforms: :ruby
 
 gem 'jquery-rails'
 
-gem 'pg'
+gem 'sqlite3'
 
 gem 'will_paginate', '~> 3.0'
 
