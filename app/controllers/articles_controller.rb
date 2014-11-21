@@ -4,7 +4,13 @@ class ArticlesController < ApplicationController
   # GET /articles
   def index
     @articles = Article.paginate(:page => params[:page])
+    puts @articles
   end
+
+  def my
+    @articles = current_user.articles.paginate(:page => params[:page])
+  end
+
   # GET /articles/1
   def show
   end
@@ -16,11 +22,15 @@ class ArticlesController < ApplicationController
 
   # GET /articles/1/edit
   def edit
+    if @article.user != current_user
+      redirect_to @article, notice: 'Permission denied.'
+    end
   end
 
   # POST /articles
   def create
     @article = Article.new(article_params)
+    @article.user= current_user
 
     if @article.save
       redirect_to @article, notice: 'Article was successfully created.'
@@ -31,15 +41,22 @@ class ArticlesController < ApplicationController
 
   # PATCH/PUT /articles/1
   def update
-    if @article.update(article_params)
-      redirect_to @article, notice: 'Article was successfully updated.'
+    if @article.user != current_user
+      redirect_to @article, notice: 'Permission denied.'
     else
-      render :edit
+      if @article.update(article_params)
+        redirect_to @article, notice: 'Article was successfully updated.'
+      else
+        render :edit
+      end
     end
   end
 
   # DELETE /articles/1
   def destroy
+    if @article.user != current_user
+      redirect_to @article, notice: 'Permission denied.'
+    end
     @article.destroy
     redirect_to articles_url, notice: 'Article was successfully destroyed.'
   end

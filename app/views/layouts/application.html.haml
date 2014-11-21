@@ -1,0 +1,12 @@
+!!!
+%html
+  %head
+    %title LearningRails
+    = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true
+    = javascript_include_tag 'application', 'data-turbolinks-track' => true
+    = csrf_meta_tags
+  %body
+    %h1 Layout
+    - if user_signed_in?
+      = link_to 'Exit', destroy_user_session_path, method: :delete
+    = yield
