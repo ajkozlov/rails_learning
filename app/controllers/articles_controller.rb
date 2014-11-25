@@ -1,5 +1,6 @@
 class ArticlesController < ApplicationController
   before_action :set_article, only: [:show, :edit, :update, :destroy]
+  load_and_authorize_resource
 
   # GET /articles
   def index
@@ -22,15 +23,12 @@ class ArticlesController < ApplicationController
 
   # GET /articles/1/edit
   def edit
-    if @article.user != current_user
-      redirect_to @article, notice: 'Permission denied.'
-    end
   end
 
   # POST /articles
   def create
     @article = Article.new(article_params)
-    @article.user= current_user
+    @article.user = current_user
 
     if @article.save
       redirect_to @article, notice: 'Article was successfully created.'
@@ -41,22 +39,15 @@ class ArticlesController < ApplicationController
 
   # PATCH/PUT /articles/1
   def update
-    if @article.user != current_user
-      redirect_to @article, notice: 'Permission denied.'
+    if @article.update(article_params)
+      redirect_to @article, notice: 'Article was successfully updated.'
     else
-      if @article.update(article_params)
-        redirect_to @article, notice: 'Article was successfully updated.'
-      else
-        render :edit
-      end
+      render :edit
     end
   end
 
   # DELETE /articles/1
   def destroy
-    if @article.user != current_user
-      redirect_to @article, notice: 'Permission denied.'
-    end
     @article.destroy
     redirect_to articles_url, notice: 'Article was successfully destroyed.'
   end
